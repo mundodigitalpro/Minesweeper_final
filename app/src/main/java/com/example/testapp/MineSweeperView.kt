@@ -12,11 +12,19 @@ import android.view.GestureDetector
 import android.view.GestureDetector.SimpleOnGestureListener
 
 
-class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, attrs){
+class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
-    private var boardWidth = 15
+    private var boardWidth = 10
     private var boardHeight = 15
     private var mineCount = 10
+    private var cellSize = 100
+
+    private var boardPixelWidth = 0
+    private var boardPixelHeight = 0
+
+    private var horizontalOffset = 0f
+    private var verticalOffset = 0f
+
 
     private lateinit var cells: Array<Array<Cell>>
     private var bitmapMine: Bitmap? = null
@@ -76,8 +84,11 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
 
     private val gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
         override fun onSingleTapUp(e: MotionEvent): Boolean {
-            val x = (e.x / (width.toFloat() / boardWidth)).toInt()
-            val y = (e.y / (height.toFloat() / boardHeight)).toInt()
+/*            val x = (e.x / (width.toFloat() / boardWidth)).toInt()
+            val y = (e.y / (height.toFloat() / boardHeight)).toInt()*/
+            val x = ((e.x - horizontalOffset) / cellSize).toInt()
+            val y = ((e.y - verticalOffset) / cellSize).toInt()
+
             if (x in 0 until boardWidth && y in 0 until boardHeight) {
                 val cell = cells[x][y]
                 if (!cell.isRevealed && !cell.isFlagged) {
@@ -89,8 +100,9 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
         }
 
         override fun onLongPress(e: MotionEvent) {
-            val x = (e.x / (width.toFloat() / boardWidth)).toInt()
-            val y = (e.y / (height.toFloat() / boardHeight)).toInt()
+            val x = ((e.x - horizontalOffset) / cellSize).toInt()
+            val y = ((e.y - verticalOffset) / cellSize).toInt()
+
             if (x in 0 until boardWidth && y in 0 until boardHeight) {
                 val cell = cells[x][y]
                 if (!cell.isRevealed) {
@@ -101,26 +113,45 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
         }
     })
 
-   override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-       super.onSizeChanged(w, h, oldw, oldh)
-       val cellSize = min(width, height) / boardWidth
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
 
-       // Cargar y escalar la imagen de la mina
-       bitmapMine = BitmapFactory.decodeResource(resources, R.drawable.mine)
-       bitmapMine = Bitmap.createScaledBitmap(bitmapMine!!, cellSize, cellSize, false)
+        // Calcular el tamaño de las celdas en función del tamaño de la pantalla y de las celdas deseadas
+        val screenWidth = width
+        val screenHeight = height
+        cellSize = min(screenWidth / boardWidth, screenHeight / boardHeight)
 
-       // Cargar y escalar la imagen de la bandera
-       bitmapFlag = BitmapFactory.decodeResource(resources, R.drawable.flag)
-       bitmapFlag = Bitmap.createScaledBitmap(bitmapFlag!!, cellSize, cellSize, false)
-   }
+        // Calcular el tamaño total del tablero en píxeles
+        boardPixelWidth = boardWidth * cellSize
+        boardPixelHeight = boardHeight * cellSize
 
+        // Calcular el desplazamiento horizontal y vertical
+        horizontalOffset = (width - boardPixelWidth) / 2f
+        verticalOffset = (height - boardPixelHeight) / 2f
+
+        // Cargar y escalar la imagen de la mina
+        bitmapMine = BitmapFactory.decodeResource(resources, R.drawable.mine)
+        bitmapMine = Bitmap.createScaledBitmap(bitmapMine!!, cellSize, cellSize, false)
+
+        // Cargar y escalar la imagen de la bandera
+        bitmapFlag = BitmapFactory.decodeResource(resources, R.drawable.flag)
+        bitmapFlag = Bitmap.createScaledBitmap(bitmapFlag!!, cellSize, cellSize, false)
+    }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.apply {
-            val cellWidth = width.toFloat() / boardWidth
-            val cellHeight = height.toFloat() / boardHeight
+
+/*            val availableVerticalSpace = height - boardHeight * cellSize
+            val verticalOffset = if (availableVerticalSpace > 0) {
+                availableVerticalSpace / 2f
+            } else {
+                0f
+            }*/
+            verticalOffset = (height - boardPixelHeight) / 2f
+            horizontalOffset = (width - boardPixelWidth) / 2f
+
             for (x in 0 until boardWidth) {
                 for (y in 0 until boardHeight) {
                     val cell = cells[x][y]
@@ -130,19 +161,19 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
                                 bitmapMine!!,
                                 null,
                                 Rect(
-                                    (x * cellWidth).toInt(),
-                                    (y * cellHeight).toInt(),
-                                    ((x + 1) * cellWidth).toInt(),
-                                    ((y + 1) * cellHeight).toInt()
+                                    (horizontalOffset + x * cellSize).toInt(),
+                                    (verticalOffset + y * cellSize).toInt(),
+                                    (horizontalOffset + (x + 1) * cellSize).toInt(),
+                                    (verticalOffset + (y + 1) * cellSize).toInt()
                                 ),
                                 null
                             )
                         } else {
                             drawRect(
-                                (x * cellWidth),
-                                (y * cellHeight),
-                                ((x + 1) * cellWidth),
-                                ((y + 1) * cellHeight),
+                                horizontalOffset + (x * cellSize),
+                                verticalOffset + (y * cellSize),
+                                horizontalOffset + ((x + 1) * cellSize),
+                                verticalOffset + ((y + 1) * cellSize),
                                 paintCell
                             )
 
@@ -155,37 +186,39 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
                                 }
                                 drawText(
                                     cell.mineCount.toString(),
-                                    (x * cellWidth) + (cellWidth / 2),
-                                    (y * cellHeight) + (cellHeight / 2),
+                                    horizontalOffset + (x * cellSize) + (cellSize / 2),
+                                    verticalOffset + (y * cellSize) + (cellSize / 2) - (paint.ascent() + paint.descent()) / 2,
                                     paint
                                 )
                             }
-
                         }
                     } else if (cell.isFlagged) {
                         drawBitmap(
                             bitmapFlag!!,
                             null,
                             Rect(
-                                (x * cellWidth).toInt(),
-                                (y * cellHeight).toInt(),
-                                ((x + 1) * cellWidth).toInt(),
-                                ((y + 1) * cellHeight).toInt()
+                                (horizontalOffset + x * cellSize).toInt(),
+                                (verticalOffset + y * cellSize).toInt(),
+                                (horizontalOffset + (x + 1) * cellSize).toInt(),
+                                (verticalOffset + (y + 1) * cellSize).toInt()
                             ),
                             null
                         )
                     }
                     drawRect(
-                        (x * cellWidth),
-                        (y * cellHeight),
-                        ((x + 1) * cellWidth),
-                        ((y + 1) * cellHeight),
+                        horizontalOffset + (x * cellSize),
+                        verticalOffset + (y * cellSize),
+                        horizontalOffset + ((x + 1) * cellSize),
+                        verticalOffset + ((y + 1) * cellSize),
                         paintLine
                     )
                 }
             }
         }
     }
+
+
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event != null) {
@@ -321,8 +354,6 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
     fun setOnGameEndListener(listener: OnGameEndListener) {
         gameEndListener = listener
     }
-
-
 
 }
 
