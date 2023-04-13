@@ -14,8 +14,8 @@ import android.view.GestureDetector.SimpleOnGestureListener
 
 class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, attrs){
 
-    private var boardWidth = 10
-    private var boardHeight = 10
+    private var boardWidth = 15
+    private var boardHeight = 15
     private var mineCount = 10
 
     private lateinit var cells: Array<Array<Cell>>
@@ -71,6 +71,7 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
     init {
         isFocusable = true
         isFocusableInTouchMode = true
+        generateBoard() // Initialize the cells property
     }
 
     private val gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
@@ -100,24 +101,6 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
         }
     })
 
-
-/*    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        bitmapMine = Bitmap.createBitmap(
-            min(width, height) / boardWidth,
-            min(width, height) / boardHeight,
-            Bitmap.Config.ARGB_8888
-        )
-        bitmapFlag = Bitmap.createBitmap(
-            min(width, height) / boardWidth,
-            min(width, height) / boardHeight,
-            Bitmap.Config.ARGB_8888
-        )
-        val canvasMine = Canvas(bitmapMine!!)
-        val canvasFlag = Canvas(bitmapFlag!!)
-        canvasMine.drawColor(Color.RED)
-        canvasFlag.drawColor(Color.YELLOW)
-    }*/
    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
        super.onSizeChanged(w, h, oldw, oldh)
        val cellSize = min(width, height) / boardWidth
@@ -163,14 +146,6 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
                                 paintCell
                             )
 
-/*                            if (cell.mineCount > 0) {
-                                drawText(
-                                    cell.mineCount.toString(),
-                                    (x * cellWidth) + (cellWidth / 2),
-                                    (y * cellHeight) + (cellHeight / 2) - (paintText.ascent() + paintText.descent()) / 2,
-                                    paintText
-                                )
-                            }*/
                             if (cell.mineCount > 0) {
                                 val paint = when (cell.mineCount) {
                                     1 -> paintTextBlue
@@ -225,32 +200,6 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
         return true
     }
 
-
-/*    private fun revealCell(x: Int, y: Int) {
-        val cell = cells[x][y]
-        if (cell.isMine) {
-            // Game over
-            cells.forEach { row ->
-                row.forEach { c ->
-                    c.isRevealed = true
-                }
-            }
-            invalidate()
-        } else {
-            cell.isRevealed = true
-            if (cell.mineCount == 0) {
-                // Reveal adjacent cells
-                for (xx in x - 1..x + 1) {
-                    for (yy in y - 1..y + 1) {
-                        if (xx in 0 until boardWidth && yy in 0 until boardHeight && !cells[xx][yy].isRevealed) {
-                            revealCell(xx, yy)
-                        }
-                    }
-                }
-            }
-            invalidate()
-        }
-    }*/
 
     private fun revealCell(x: Int, y: Int) {
         val cell = cells[x][y]
