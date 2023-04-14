@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity(), MineSweeperView.OnScoreChangeListener,
 
         mineSweeperView = findViewById(R.id.mineSweeperView)
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout)
-
         scoreTextView = findViewById(R.id.tvScore)
         timerTextView = findViewById(R.id.tvTimer)
 

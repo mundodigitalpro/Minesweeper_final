@@ -14,9 +14,9 @@ import android.view.GestureDetector.SimpleOnGestureListener
 
 class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
-    private var boardWidth = 10
-    private var boardHeight = 15
-    private var mineCount = 10
+    private var boardWidth = 12
+    private var boardHeight = 22
+    private var mineCount = (boardWidth * boardHeight * 0.10).toInt()
     private var cellSize = 100
 
     private var boardPixelWidth = 0
@@ -84,8 +84,6 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
 
     private val gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
         override fun onSingleTapUp(e: MotionEvent): Boolean {
-/*            val x = (e.x / (width.toFloat() / boardWidth)).toInt()
-            val y = (e.y / (height.toFloat() / boardHeight)).toInt()*/
             val x = ((e.x - horizontalOffset) / cellSize).toInt()
             val y = ((e.y - verticalOffset) / cellSize).toInt()
 
@@ -143,12 +141,6 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
         super.onDraw(canvas)
         canvas?.apply {
 
-/*            val availableVerticalSpace = height - boardHeight * cellSize
-            val verticalOffset = if (availableVerticalSpace > 0) {
-                availableVerticalSpace / 2f
-            } else {
-                0f
-            }*/
             verticalOffset = (height - boardPixelHeight) / 2f
             horizontalOffset = (width - boardPixelWidth) / 2f
 
