@@ -9,24 +9,35 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <TextView
             android:id="@+id/tvScore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Puntuación: 0"
-            android:textSize="24sp"
+            android:text="@string/score"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_margin="8dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
+            android:id="@+id/tvHighScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/high_score"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_margin="8dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tvScore"
+            app:layout_constraintEnd_toStartOf="@id/tvTimer" />
+
+        <TextView
             android:id="@+id/tvTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tiempo: 0"
-            android:textSize="24sp"
+            android:text="@string/time"
+            android:textSize="16sp"
             android:textStyle="bold"
             android:layout_margin="8dp"
             app:layout_constraintTop_toTopOf="parent"

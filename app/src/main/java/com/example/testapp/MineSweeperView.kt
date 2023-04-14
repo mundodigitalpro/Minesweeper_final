@@ -347,5 +347,10 @@ class MineSweeperView(context: Context, attrs: AttributeSet?) : View(context, at
         gameEndListener = listener
     }
 
+    fun getCurrentScore(): Int {
+        return score
+    }
+
+
 }
 
