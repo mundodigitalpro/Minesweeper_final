@@ -1,4 +1,4 @@
-package com.example.testapp
+package com.josejordan.minesweeper
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.TextView
 import android.os.Handler
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+
 class MainActivity : AppCompatActivity(), MineSweeperView.OnScoreChangeListener, MineSweeperView.OnGameEndListener {
 
 

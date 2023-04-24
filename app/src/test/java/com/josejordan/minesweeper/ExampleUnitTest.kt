@@ -1,4 +1,4 @@
-package com.example.testapp
+package com.josejordan.minesweeper
 
 import org.junit.Test
 

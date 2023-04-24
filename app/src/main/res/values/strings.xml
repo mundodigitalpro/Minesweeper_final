@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">testapp</string>
+    <string name="app_name">BuscaMinas</string>
     <string name="high_score">High Score: 0</string>
     <string name="score">Score: %1$d</string>
     <string name="score_default">Score: %d</string>

@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <com.example.testapp.MineSweeperView
+        <com.josejordan.minesweeper.MineSweeperView
             android:id="@+id/mineSweeperView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

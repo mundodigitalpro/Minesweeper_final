@@ -1,4 +1,4 @@
-package com.example.testapp
+package com.josejordan.minesweeper
 
 import android.annotation.SuppressLint
 import android.content.Context
