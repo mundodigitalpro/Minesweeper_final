@@ -2,11 +2,6 @@
 
 A classic Minesweeper game for Android, written in Kotlin. This project provides a clean and intuitive interface for players of all skill levels.
 
-
-![Minesweeper Screenshot 1](screenshot1.png)
-![Minesweeper Screenshot 2](screenshot2.png)
-![Minesweeper Screenshot 3](screenshot3.png)
-
 ## Features
 
 - Custom `MineSweeperView` for game board rendering
